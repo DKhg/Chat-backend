@@ -26,8 +26,8 @@ public class ChatRestController {
     
     // 채팅방 메시지 조회
     @GetMapping("/{roomId}/messages")
-    public List<ChatMessageDto> getMessage(@PathVariable Long roomId) {
-        return chatService.getMessage(roomId).stream().map(ChatMessageDto::fromEntity).toList();
+    public List<ChatMessageDto> getMessage(@PathVariable Long roomId, @RequestParam boolean includeUnreadCount) {
+        return chatService.getMessage(roomId, includeUnreadCount);
     }
 
 }

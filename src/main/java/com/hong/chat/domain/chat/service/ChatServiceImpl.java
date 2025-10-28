@@ -28,7 +28,7 @@ public class ChatServiceImpl implements ChatService{
 
     // 메시지 저장
     @Override
-    public void saveMessage(ChatMessageDto dto) {
+    public ChatMessage saveMessage(ChatMessageDto dto) {
 
         // 채팅방 조회
         ChatRoom room = chatRoomRepository.findById(dto.getRoomId())
@@ -45,16 +45,34 @@ public class ChatServiceImpl implements ChatService{
                 .createdAt(LocalDateTime.now())
                 .sender(user)
                 .build();
+        ChatMessage savedMessage = chatMessageRepository.save(message);
 
-        chatMessageRepository.save(message);
+        // 보낸 사람의 마지막 읽은 시간 갱신
+        chatParticipantRepository.findByChatRoom_IdAndUser_UserId(room.getId(), user.getUserId())
+                .ifPresent(p -> {p.setLastReadAt(savedMessage.getCreatedAt()); chatParticipantRepository.save(p); });
+
+
+        return savedMessage;
     }
     
     // 메시지 조회
     @Override
-    public List<ChatMessage> getMessage(Long roomId) {
-        
+    public List<ChatMessageDto> getMessage(Long roomId, boolean includeUnreadCount) {
+
         // 생성일자 오름차순으로 채팅방 메시지 조회
-        return chatMessageRepository.findByChatRoom_IdOrderByCreatedAtAsc(roomId);
+        List<ChatMessage> messages = chatMessageRepository.findByChatRoom_IdOrderByCreatedAtAsc(roomId);
+
+        return messages.stream()
+                .map(msg -> {
+                    // 읽지않은 수 포함 조회
+                    if (includeUnreadCount) {
+                        long unreadCount = chatParticipantRepository.countUnreadUsers(roomId, msg.getCreatedAt());
+                        return ChatMessageDto.fromEntityWithUnreadCount(msg, unreadCount);
+                    } else {
+                        return ChatMessageDto.fromEntity(msg);
+                    }
+                })
+                .toList();
     }
 
     @Override

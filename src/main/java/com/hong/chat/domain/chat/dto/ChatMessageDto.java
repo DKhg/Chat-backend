@@ -21,6 +21,7 @@ public class ChatMessageDto {
     private String senderName;          // 보낸 사람 이름
     private String content;             // 메시지 내용
     private LocalDateTime createdAt;    // 보낸 시각
+    private Long unreadCount;           // 메시지 읽지 않은 사람 수
 
 
     /**
@@ -37,7 +38,7 @@ public class ChatMessageDto {
     }
 
     /**
-     * 조회용 : Entity → DTO
+     * 단순 조회용 : Entity → DTO
      */
     public static ChatMessageDto fromEntity(ChatMessage message) {
         return ChatMessageDto.builder()
@@ -47,6 +48,21 @@ public class ChatMessageDto {
                 .messageType(message.getMessageType())
                 .content(message.getContent())
                 .createdAt(message.getCreatedAt())
+                .build();
+    }
+
+    /**ㄹ
+     * 읽음 카운트 포함 : Entity → DTO
+     */
+    public static ChatMessageDto fromEntityWithUnreadCount(ChatMessage message, long unreadCount) {
+        return ChatMessageDto.builder()
+                .roomId(message.getChatRoom().getId())
+                .senderId(message.getSender() != null ? message.getSender().getUserId() : null)
+                .senderName(message.getSender() != null ? message.getSender().getNickname() : "알 수 없음")
+                .messageType(message.getMessageType())
+                .content(message.getContent())
+                .createdAt(message.getCreatedAt())
+                .unreadCount(unreadCount)
                 .build();
     }
 }
