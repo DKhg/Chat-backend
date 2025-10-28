@@ -8,6 +8,7 @@ import com.hong.chat.domain.chat.repository.ChatMessageRepository;
 import com.hong.chat.domain.chat.repository.ChatParticipantRepository;
 import com.hong.chat.domain.chat.repository.ChatRoomRepository;
 import com.hong.chat.domain.user.domain.User;
+import com.hong.chat.domain.user.dto.UserDto;
 import com.hong.chat.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,7 +50,10 @@ public class ChatServiceImpl implements ChatService{
 
         // 보낸 사람의 마지막 읽은 시간 갱신
         chatParticipantRepository.findByChatRoom_IdAndUser_UserId(room.getId(), user.getUserId())
-                .ifPresent(p -> {p.setLastReadAt(savedMessage.getCreatedAt()); chatParticipantRepository.save(p); });
+                .ifPresent(p -> {
+                    p.setLastReadAt(savedMessage.getCreatedAt());
+                    chatParticipantRepository.save(p);
+                });
 
 
         return savedMessage;
@@ -74,7 +78,8 @@ public class ChatServiceImpl implements ChatService{
                 })
                 .toList();
     }
-
+    
+    // 사용자 채팅방 목록 조회
     @Override
     public List<ChatParticipant> getUserRooms(String userId) {
         return chatParticipantRepository.findByUser_userId(userId);

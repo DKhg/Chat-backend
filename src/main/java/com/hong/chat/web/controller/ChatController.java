@@ -3,9 +3,7 @@ package com.hong.chat.web.controller;
 import com.hong.chat.domain.chat.domain.ChatMessage;
 import com.hong.chat.domain.chat.dto.ChatMessageDto;
 import com.hong.chat.domain.chat.repository.ChatParticipantRepository;
-import com.hong.chat.domain.chat.repository.ChatRoomRepository;
 import com.hong.chat.domain.chat.service.ChatService;
-import com.hong.chat.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -21,10 +19,10 @@ public class ChatController {
 
     private final ChatService chatService;
     private final ChatParticipantRepository chatParticipantRepository;
-    private final ChatRoomRepository chatRoomRepository;
+
     // 서버에서 특정 topic 구독자들에게 메시지를 전송하는 Spring 내장 인터페이스
     private final SimpMessageSendingOperations messagingTemplate;
-    private final UserRepository userRepository;
+
 
     /**
      * Payload → WebSocket 에서 수신된 JSON 메시지를 DTO 객체로 변환해줌
@@ -36,8 +34,6 @@ public class ChatController {
     
         // 메시지 보낸 시간 설정
         chatMessage.setCreatedAt(LocalDateTime.now());
-
-        // 메시지
 
         // 메시지 타입에 메시지 설정
         switch(chatMessage.getMessageType()) {
@@ -70,8 +66,7 @@ public class ChatController {
     @MessageMapping("/chatRead")
     public void readMessage(@Payload Map<String, Object> payload) {
         Number roomIdNum = (Number) payload.get("roomId");
-        Long roomId = roomIdNum.longValue(); // ✅ 안전하게 변환
-
+        Long roomId = roomIdNum.longValue();
         String userId = (String) payload.get("userId");
 
         // lastReadAt 갱신

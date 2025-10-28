@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class ChatMessageDto {
 
     private MessageType messageType;    // ENTER, TALK, LEAVE
-    private Long roomId;                // 채팅방 ID (UUID 등)
+    private Long roomId;                // 채팅방 ID
     private String senderId;            // 보낸 사람 ID
     private String senderName;          // 보낸 사람 이름
     private String content;             // 메시지 내용
@@ -51,7 +51,7 @@ public class ChatMessageDto {
                 .build();
     }
 
-    /**ㄹ
+    /**
      * 읽음 카운트 포함 : Entity → DTO
      */
     public static ChatMessageDto fromEntityWithUnreadCount(ChatMessage message, long unreadCount) {

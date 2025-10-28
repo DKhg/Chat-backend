@@ -3,6 +3,7 @@ package com.hong.chat.domain.chat.service;
 import com.hong.chat.domain.chat.domain.ChatMessage;
 import com.hong.chat.domain.chat.domain.ChatParticipant;
 import com.hong.chat.domain.chat.dto.ChatMessageDto;
+import com.hong.chat.domain.user.dto.UserDto;
 
 import java.util.List;
 
@@ -16,4 +17,5 @@ public interface ChatService {
 
     // 참가자가 속한 채팅방 목록 조회
     List<ChatParticipant> getUserRooms(String userId);
+
 }
