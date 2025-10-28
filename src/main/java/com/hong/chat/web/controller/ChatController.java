@@ -1,13 +1,10 @@
 package com.hong.chat.web.controller;
 
 import com.hong.chat.domain.chat.domain.ChatMessage;
-import com.hong.chat.domain.chat.domain.ChatRoom;
 import com.hong.chat.domain.chat.dto.ChatMessageDto;
-import com.hong.chat.domain.chat.dto.MessageReadDto;
 import com.hong.chat.domain.chat.repository.ChatParticipantRepository;
 import com.hong.chat.domain.chat.repository.ChatRoomRepository;
 import com.hong.chat.domain.chat.service.ChatService;
-import com.hong.chat.domain.user.domain.User;
 import com.hong.chat.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
