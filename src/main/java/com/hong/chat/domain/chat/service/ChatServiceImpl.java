@@ -4,17 +4,18 @@ import com.hong.chat.domain.chat.domain.ChatMessage;
 import com.hong.chat.domain.chat.domain.ChatParticipant;
 import com.hong.chat.domain.chat.domain.ChatRoom;
 import com.hong.chat.domain.chat.dto.ChatMessageDto;
+import com.hong.chat.domain.chat.dto.ChatRoomDto;
 import com.hong.chat.domain.chat.repository.ChatMessageRepository;
 import com.hong.chat.domain.chat.repository.ChatParticipantRepository;
 import com.hong.chat.domain.chat.repository.ChatRoomRepository;
 import com.hong.chat.domain.user.domain.User;
-import com.hong.chat.domain.user.dto.UserDto;
 import com.hong.chat.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -65,7 +66,6 @@ public class ChatServiceImpl implements ChatService{
 
         // 생성일자 오름차순으로 채팅방 메시지 조회
         List<ChatMessage> messages = chatMessageRepository.findByChatRoom_IdOrderByCreatedAtAsc(roomId);
-
         return messages.stream()
                 .map(msg -> {
                     // 읽지않은 수 포함 조회
@@ -85,4 +85,43 @@ public class ChatServiceImpl implements ChatService{
         return chatParticipantRepository.findByUser_userId(userId);
     }
 
+    // 채팅방 생성
+    @Override
+    public ChatRoom createChatRoom(ChatRoomDto chatRoomDto) {
+        ChatRoom chatRoom = new ChatRoom();
+        chatRoom.setRoomType(chatRoomDto.getRoomType());
+        chatRoom.setName(chatRoomDto.getName());
+
+        // 채팅방 생성
+        ChatRoom createdChatRoom = chatRoomRepository.save(chatRoom);
+
+        // 참여자 ID 목록 구성
+        List<String> userIds = new ArrayList<>();
+
+        // 생성자 자신 추가
+        if(!chatRoomDto.getUserId().isEmpty()) {
+            userIds.add(chatRoomDto.getUserId());
+        }
+
+        // 1:1 채팅방 생성 시
+        if(!chatRoomDto.getSelectedUser().isEmpty()) {
+            userIds.add(chatRoomDto.getSelectedUser());
+        }
+        // 그룹 채팅방 생성 시
+        if(!chatRoomDto.getSelectedUsers().isEmpty()) {
+            userIds.addAll(List.of(chatRoomDto.getSelectedUsers().split(",")));
+        }
+
+        // 관련된 ChatParticipant 생성
+        for(String userId : userIds) {
+            User user = userRepository.findByUserId(userId);
+            if(user == null) continue;
+            ChatParticipant chatParticipant = new ChatParticipant();
+            chatParticipant.setChatRoom(createdChatRoom);
+            chatParticipant.setUser(user);
+            chatParticipantRepository.save(chatParticipant);
+        }
+
+        return createdChatRoom;
+    }
 }

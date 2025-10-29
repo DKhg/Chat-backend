@@ -24,9 +24,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getUserList() {
+    public List<UserDto> getUserList(String userId) {
 
-        List<User> userList = userRepository.findAll();
+        List<User> userList = userRepository.findAllExceptUserId(userId);
 
         return userList.stream()
                 .map(user -> UserDto.builder()

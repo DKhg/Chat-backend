@@ -30,9 +30,9 @@ public class UserController {
         return ResponseEntity.ok(responseUserDto);
     }
 
-    // 사용자 목록 조회
+    // 사용자 목록 조회 ( 자기 자신을 제외 )
     @GetMapping("/users")
-    public List<UserDto> getUserList() {
-        return userService.getUserList();
+    public List<UserDto> getUserList(@RequestParam String userId) {
+        return userService.getUserList(userId);
     }
 }

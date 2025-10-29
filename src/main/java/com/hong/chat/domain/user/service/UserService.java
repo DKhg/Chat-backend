@@ -11,5 +11,5 @@ public interface UserService {
     User login(String userId, String password);
 
     // 사용자 목록 조회
-    List<UserDto> getUserList();
+    List<UserDto> getUserList(String userId);
 }
