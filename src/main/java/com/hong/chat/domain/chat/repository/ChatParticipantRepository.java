@@ -1,13 +1,12 @@
 package com.hong.chat.domain.chat.repository;
 
 import com.hong.chat.domain.chat.domain.ChatParticipant;
-import com.hong.chat.domain.chat.domain.ChatRoom;
-import com.hong.chat.domain.user.domain.User;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,4 +32,20 @@ public interface ChatParticipantRepository extends JpaRepository<ChatParticipant
        AND (c.lastReadAt IS NULL OR c.lastReadAt < :messageCreatedAt)
     """)
     int countUnreadUsers(@Param("roomId") Long roomId, @Param("messageCreatedAt") LocalDateTime messageCreatedAt);
+
+    /**
+     * 특정 참여자의 채팅방 나가기
+     * 단순 조회는 @Query만 써도됨 / DELETE, UPDATE, INSERT @Modifying  붙여주기
+     */
+    @Modifying
+    @Transactional
+    @Query("""
+    DELETE FROM ChatParticipant c
+     WHERE 1=1
+       AND c.chatRoom.id = :roomId
+       AND c.user.userId = :userId
+    """)
+    void deleteByChatRoomIdAndUserId(@Param("roomId") Long roomId, @Param("userId") String userId);
+
+    double countByChatRoom_id(long chatRoomId);
 }

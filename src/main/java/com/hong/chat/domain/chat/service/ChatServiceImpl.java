@@ -124,4 +124,21 @@ public class ChatServiceImpl implements ChatService{
 
         return createdChatRoom;
     }
+
+    // 채팅방 나가기
+    @Override
+    public void leaveChatRoom(Long roomId, String userId) {
+        // 채팅방에서 특정 참가자 제거
+        chatParticipantRepository.deleteByChatRoomIdAndUserId(roomId, userId);
+        
+        // 채팅방에 참여자가 0명이면 채팅방도 삭제 (논리적인 삭제)
+        if(chatParticipantRepository.countByChatRoom_id(roomId) == 0) {
+            // 채팅방 조회
+            ChatRoom chatRoom = chatRoomRepository.findById(roomId).orElse(null);
+            if( chatRoom != null) {
+                chatRoom.setDeleteYn("Y");
+                chatRoomRepository.save(chatRoom);
+            }
+        }
+    }
 }

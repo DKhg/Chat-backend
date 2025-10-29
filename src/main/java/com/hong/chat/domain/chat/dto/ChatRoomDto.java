@@ -16,5 +16,6 @@ public class ChatRoomDto {
     private String userId;
     private String selectedUser;
     private String selectedUsers;
+    private String deleteYn;
 
 }

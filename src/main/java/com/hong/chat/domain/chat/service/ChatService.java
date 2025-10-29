@@ -5,7 +5,6 @@ import com.hong.chat.domain.chat.domain.ChatParticipant;
 import com.hong.chat.domain.chat.domain.ChatRoom;
 import com.hong.chat.domain.chat.dto.ChatMessageDto;
 import com.hong.chat.domain.chat.dto.ChatRoomDto;
-import com.hong.chat.domain.user.dto.UserDto;
 
 import java.util.List;
 
@@ -22,4 +21,7 @@ public interface ChatService {
 
     // 채팅방 생성
     ChatRoom createChatRoom(ChatRoomDto ChatRoomDto);
+
+    // 채팅방 나가기
+    void leaveChatRoom(Long roomId, String userId);
 }

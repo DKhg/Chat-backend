@@ -22,4 +22,7 @@ public class ChatRoom {
 
     private String name;
 
+    @Column
+    private String deleteYn = "N";
+
 }
