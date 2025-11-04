@@ -45,4 +45,12 @@ public class UserController {
     public List<UserDto> getUserList(@RequestParam String userId) {
         return userService.getUserList(userId);
     }
+    
+    // 회원가입
+    @PostMapping("/join")
+    public ResponseEntity<UserDto> join(@RequestBody UserDto userDto) {
+        User user = userService.join(userDto);
+        user.setPassword(null);
+        return ResponseEntity.ok(UserDto.fromEntity(user));
+    }
 }

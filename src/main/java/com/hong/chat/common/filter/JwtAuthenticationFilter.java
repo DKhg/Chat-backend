@@ -33,6 +33,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        //  회원가입/로그인 요청은 JWT 검사 제외 ( 403 에러가 뜸 )
+        if (path.startsWith("/api/user/login") || path.startsWith("/api/user/join")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         // Authorization 헤더에서 JWT 토큰 추출
         String token = resolveToken(request);
 

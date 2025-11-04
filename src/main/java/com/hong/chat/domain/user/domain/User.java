@@ -30,6 +30,12 @@ public class User {
     private String nickname;            // 닉네임
 
     @Column
+    private String email;               // 이메일
+
+    @Column
+    private String username;            // 이름
+
+    @Column
     private LocalDateTime createAt;     // 생성일자
 
 }

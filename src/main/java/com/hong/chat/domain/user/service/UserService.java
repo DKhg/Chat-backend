@@ -12,4 +12,7 @@ public interface UserService {
 
     // 사용자 목록 조회
     List<UserDto> getUserList(String userId);
+    
+    // 회원가입
+    User join(UserDto userDto);
 }
